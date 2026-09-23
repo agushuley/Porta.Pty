@@ -105,8 +105,8 @@ terminal.Resize(80, 24);
 | `Rows` | `int` | Initial number of rows |
 | `Cwd` | `string` | Working directory for the process |
 | `App` | `string` | Path to the executable to spawn |
-| `CommandLine` | `string[]` | Command line arguments |
-| `VerbatimCommandLine` | `bool` | If `true`, arguments are not quoted |
+| `CommandLine` | `string[]` | Unescaped argv tail; Porta serializes each argument for the target platform |
+| `VerbatimCommandLine` | `bool` | Obsolete compatibility escape hatch for preformatted command-line fragments |
 | `Environment` | `IDictionary<string, string>` | Environment variables (empty value removes the variable) |
 
 ### IPtyConnection Interface

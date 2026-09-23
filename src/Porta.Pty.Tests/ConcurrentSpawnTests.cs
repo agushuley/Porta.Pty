@@ -625,10 +625,6 @@ namespace Porta.Pty.Tests
                 Cwd = Environment.CurrentDirectory,
                 App = app,
                 CommandLine = args,
-
-                // Verbatim only for the minimal form. the downstream consumer passes an argument ARRAY and lets it be
-                // quoted per element with MSVCRT rules, which is part of what is being reproduced.
-                VerbatimCommandLine = mode == ShellMode.Minimal,
                 Environment = new Dictionary<string, string>(),
             };
         }
