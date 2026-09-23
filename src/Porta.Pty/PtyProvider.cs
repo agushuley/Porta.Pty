@@ -80,14 +80,38 @@ namespace Porta.Pty
                 throw new ArgumentNullException(nameof(options.App));
             }
 
+            if (options.App.Contains('\0'))
+            {
+                throw new ArgumentException("app must not contain NUL", nameof(options.App));
+            }
+
             if (string.IsNullOrEmpty(options.Cwd))
             {
                 throw new ArgumentNullException(nameof(options.Cwd));
             }
 
+            if (options.Cwd.Contains('\0'))
+            {
+                throw new ArgumentException("cwd must not contain NUL", nameof(options.Cwd));
+            }
+
             if (options.CommandLine == null)
             {
                 throw new ArgumentNullException(nameof(options.CommandLine));
+            }
+
+            for (int i = 0; i < options.CommandLine.Length; i++)
+            {
+                string? argument = options.CommandLine[i];
+                if (argument == null)
+                {
+                    throw new ArgumentException("command line arguments must be non-null", nameof(options.CommandLine));
+                }
+
+                if (argument.Contains('\0'))
+                {
+                    throw new ArgumentException("command line arguments must not contain NUL", nameof(options.CommandLine));
+                }
             }
 
             if (options.Environment == null)

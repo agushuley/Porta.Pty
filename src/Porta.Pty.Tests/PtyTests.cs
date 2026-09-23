@@ -40,7 +40,6 @@ namespace Porta.Pty.Tests
                 CommandLine = IsWindows
                     ? new[] { "/c", command }
                     : new[] { "-c", command },
-                VerbatimCommandLine = true,
                 Environment = new Dictionary<string, string>()
             };
         }
@@ -226,7 +225,6 @@ namespace Porta.Pty.Tests
                 CommandLine = IsWindows
                     ? new[] { "/c", command }
                     : new[] { "-c", command },
-                VerbatimCommandLine = true,
                 Environment = new Dictionary<string, string>
                 {
                     { "MY_TEST_VAR", "custom_value_12345" }

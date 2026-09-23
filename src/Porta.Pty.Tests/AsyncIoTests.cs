@@ -228,7 +228,6 @@ namespace Porta.Pty.Tests
         {
             var options = Shell(name, useAsyncIo: true);
             options.CommandLine = IsWindows ? new[] { "/c", "exit 7" } : new[] { "-c", "exit 7" };
-            options.VerbatimCommandLine = true;
             return options;
         }
 
@@ -282,7 +281,6 @@ namespace Porta.Pty.Tests
                 Cwd = Environment.CurrentDirectory,
                 App = "/bin/sh",
                 CommandLine = new[] { "-c", "trap '' HUP; while :; do sleep 1; done" },
-                VerbatimCommandLine = true,
                 Environment = new Dictionary<string, string>(),
                 UseAsyncIo = true,
             };

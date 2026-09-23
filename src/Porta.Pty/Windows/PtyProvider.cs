@@ -280,29 +280,12 @@ namespace Porta.Pty.Windows
                 try
                 {
                     string app = GetAppOnPath(options.App, options.Cwd, options.Environment);
-                    string arguments = options.VerbatimCommandLine ?
-                        WindowsArguments.FormatVerbatim(options.CommandLine) :
-                        WindowsArguments.Format(options.CommandLine);
-
-                    var commandLine = new StringBuilder(app.Length + arguments.Length + 4);
-                    bool quoteApp = app.Contains(" ") && !app.StartsWith("\"") && !app.EndsWith("\"");
-                    if (quoteApp)
-                    {
-                        commandLine.Append('"').Append(app).Append('"');
-                    }
-                    else
-                    {
-                        commandLine.Append(app);
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(arguments))
-                    {
-                        commandLine.Append(' ');
-                        commandLine.Append(arguments);
-                    }
+#pragma warning disable CS0618 // Preserve the documented legacy escape hatch.
+                    WindowsProcessLaunch launch = WindowsArguments.CreateLaunch(app, options.CommandLine, options.VerbatimCommandLine);
+#pragma warning restore CS0618
 
                     trace.TraceInformation(
-                        $"Starting terminal process '{app}' with command line {commandLine} "
+                        $"Starting terminal process '{launch.ApplicationName}' with command line {launch.CommandLine} "
                         + $"via {pseudoConsole.Implementation}");
 
                     int pid = 0;
@@ -320,8 +303,8 @@ namespace Porta.Pty.Windows
                             // Call the Win32 CreateProcess
                             var processInfoRaw = default(PROCESS_INFORMATION);
                             success = CreateProcessW(
-                                null,   // lpApplicationName
-                                commandLine.ToString(),
+                                launch.ApplicationName,
+                                launch.CommandLine,
                                 IntPtr.Zero,   // lpProcessAttributes
                                 IntPtr.Zero,   // lpThreadAttributes
                                 false,  // bInheritHandles VERY IMPORTANT that this is false
@@ -399,7 +382,7 @@ namespace Porta.Pty.Windows
                     {
                         var errorCode = Marshal.GetLastWin32Error();
                         var exception = new Win32Exception(errorCode);
-                        throw new InvalidOperationException($"Could not start terminal process {commandLine.ToString()}: {exception.Message}", exception);
+                        throw new InvalidOperationException($"Could not start terminal process {launch.CommandLine}: {exception.Message}", exception);
                     }
 
                     var connectionOptions = new PseudoConsoleConnection.PseudoConsoleConnectionHandles(

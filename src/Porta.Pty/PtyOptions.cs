@@ -37,15 +37,18 @@ namespace Porta.Pty
         public string App { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the command line arguments to the process.
+        /// Gets or sets the unescaped argv tail for the process. Every entry must be non-null and
+        /// must not contain NUL. Porta serializes these values for the target platform; callers must
+        /// not add Windows command-line quoting themselves.
         /// </summary>
         public string[] CommandLine { get; set; } = Array.Empty<string>();
 
         /// <summary>
-        /// Gets or sets a value indicating whether command line arguments must be quoted.
-        /// <c>false</c>, the default, means that the arguments must be quoted and quotes inside escaped then concatenated with spaces.
-        /// <c>true</c> means that the arguments must not be quoted and just concatenated with spaces.
+        /// Gets or sets a value indicating whether <see cref="CommandLine"/> contains preformatted
+        /// command-line fragments that must be joined without serialization. This legacy escape hatch
+        /// is unsafe for ordinary process launches; supply unescaped argv entries instead.
         /// </summary>
+        [Obsolete("CommandLine is an unescaped argv tail. Do not preformat arguments; this compatibility escape hatch will be removed in a future major release.")]
         public bool VerbatimCommandLine { get; set; }
 
         /// <summary>
